@@ -3,6 +3,7 @@ package com.example.bookstore.api.controller;
 import com.example.bookstore.model.User;
 import com.example.bookstore.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +16,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping
     public User createUser(@RequestBody User user) {
+        String rawPassword = user.getPassword();
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        user.setPassword(encodedPassword);
         return userService.saveUser(user);
     }
 
